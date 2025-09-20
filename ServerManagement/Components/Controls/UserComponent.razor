@@ -1,0 +1,14 @@
+﻿<a class="btn btn-secondary" href="/users/add">Add User</a>
+
+@foreach (User user in users)
+{
+    <div data-name="@user.Email" class="rounded-1 shadow-sm p-2 border-primary">
+        <h3>Fullname: @user.FirstName, @user.LastName</h3>
+        <h4>Email: @user.Email</h4>
+        <a class="btn btn-primary" href="/users/edit/@(user.Id)">Edit</a>
+    </div>    
+}
+
+@code {
+    private List<User> users = UserRepository.GetAll().ToList();
+}

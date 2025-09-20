@@ -1,0 +1,45 @@
+﻿@page "/servers"
+@attribute [StreamRendering] 
+
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between">
+    <h3>Servers</h3>
+
+    <a href="/servers/add" class="btn btn-secondary mb-3">Add Server</a>
+</div>
+
+@foreach (Server server in servers)
+{
+    <div data-name="@server.Name" class="rounded-1 shadow-sm p-2 bg-opacity-10" style="@($"background-color:{(server.Status == ServerStatus.Online ? "green" : "red")};")">
+        <h4>@server.Name</h4>
+        <p>Status: @server.Status</p>
+        <p>IP Address: @server.IPAddress</p>
+        <div class="d-flex justify-content-between">
+            <a class="btn btn-primary" href="@($"/servers/edit/{server.Id}")">Edit</a>
+
+            <EditForm Model="server"
+                      FormName="@($"form-server-{server.Id}")"
+                      OnValidSubmit="@(() => {DeleteServer(server.Id); })">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </EditForm>
+
+        </div>
+    </div>
+
+    <br />
+}
+
+@code {
+    private List<Server> servers = ServerRepository.GetAll().ToList();
+
+    private void DeleteServer(int serverId)
+    {
+        if (serverId > 0)
+        {
+            ServerRepository.Delete(serverId);
+            NavigationManager.Refresh();
+        }
+    }
+}
+

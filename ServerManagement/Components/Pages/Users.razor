@@ -1,0 +1,35 @@
+﻿@page "/users"
+@attribute [StreamRendering]
+
+@inject NavigationManager NavigationManager
+
+<div class="d-flex justify-content-between">
+    <h3>Users Info</h3>
+
+    <a class="btn btn-secondary" href="/users/add">Add User</a>
+</div>
+
+
+@foreach (User user in users)
+{
+    <div data-name="@user.Email" class="rounded-1 shadow-sm p-2 mt-2 mb-2 border-primary bg-secondary bg-opacity-10">
+        <h3>Fullname: @user.FirstName, @user.LastName</h3>
+        <h4>Email: @user.Email</h4>
+        <div class="d-flex justify-content-between">
+            <a class="btn btn-primary" href="/users/edit/@(user.Id)">Edit</a>
+            <EditForm Model="user" FormName="@($"form-edit-{user.Id}")" OnValidSubmit="@(() => {DeleteUser(user.Id);})">
+                <button class="btn btn-danger">Delete</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    private List<User> users = UserRepository.GetAll().ToList();
+
+    private void DeleteUser(int userId)
+    {
+        UserRepository.Delete(userId);
+        NavigationManager.Refresh();
+    }
+}

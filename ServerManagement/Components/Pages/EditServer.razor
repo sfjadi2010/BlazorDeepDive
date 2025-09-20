@@ -1,0 +1,62 @@
+﻿@page "/servers/edit/{id:int}"
+
+@inject NavigationManager NavigationManager
+
+<h3>Edit Server</h3>
+
+
+@if (server != null)
+{
+    <EditForm Model="server" OnValidSubmit="SaveData" FormName="ServerEditForm">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <InputNumber @bind-Value="server.Id" class="form-control" type="hidden" />
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <InputText id="name" class="form-control" @bind-Value="server.Name" />
+        </div>
+        <div class="mb-3">
+            <label for="ipAddress" class="form-label">IP Address</label>
+            <InputText id="ipAddress" class="form-control" @bind-Value="server.IPAddress" />
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <InputSelect id="status" class="form-select" @bind-Value="server.Status">
+                <option value="">Select Status</option>
+                @foreach (var status in Enum.GetValues<ServerStatus>())
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </EditForm>
+}
+else
+{
+    <p>Loading server details...</p>
+}
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Server? server { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        server ??= ServerRepository.GetById(id);
+    }
+
+    private void SaveData()
+    {
+        if (server != null)
+        {
+            ServerRepository.Update(server);
+        }
+        // Navigate back to the servers list or show a success message
+        NavigationManager.NavigateTo("/servers");
+    }
+}

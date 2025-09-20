@@ -1,0 +1,47 @@
+﻿@page "/users/edit/{id:int}"
+
+@inject NavigationManager NavigationManager
+
+<h3>Edit User</h3>
+
+<EditForm Model="user" FormName="UserForm" OnSubmit="SaveData">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputNumber @bind-Value="user.Id" class="form-control" type="hidden" />
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <InputText id="firstName" class="form-control" @bind-Value="user.FirstName" />
+    </div>
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <InputText id="lastName" class="form-control" @bind-Value="user.LastName" />
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="user.Email" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    [SupplyParameterFromForm]
+    private User? user { get; set; }
+    
+    protected override void OnParametersSet()
+    {
+        user ??= UserRepository.GetById(id);
+    }
+
+    private void SaveData()
+    {
+        if (user != null)
+        {
+            UserRepository.Update(user, id);
+        }
+        // Navigate back to the users list or show a success message
+        NavigationManager.NavigateTo("/users");
+    }
+}
