@@ -17,7 +17,7 @@
         <h4>Email: @user.Email</h4>
         <div class="d-flex justify-content-between">
             <a class="btn btn-primary" href="/users/edit/@(user.Id)">Edit</a>
-            <EditForm Model="user" FormName="@($"form-edit-{user.Id}")" OnValidSubmit="@(() => {DeleteUser(user.Id);})">
+            <EditForm Model="user" FormName="@($"form-delete-{user.Id}")" OnValidSubmit="@(() => {DeleteUser(user.Id);})">
                 <button class="btn btn-danger">Delete</button>
             </EditForm>
         </div>
